@@ -1,0 +1,24 @@
+Simple nautilus-scripts
+
+Latest version available at: https://github.com/obilodeau/nautilus-scripts
+
+What
+====
+* `x264-encode.sh`
+
+  Transcode a video file using h264 for video and mp3 for audio. Works with 
+  multiple files selected. Shows a progress bar.
+
+  See the source for parameters (currently tuned for home videos done with a 
+  picture camera).
+
+* `x264-encode-rotate-right.sh`
+
+  Same as `x264-encode.sh` but also rotates the video by 90 degrees to the
+  right.
+
+Install
+=======
+1. Copy scripts in ~/.gnome2/nautilus-scripts/
+2. Make sure they are executable
+
