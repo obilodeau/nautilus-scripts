@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2011, Olivier Bilodeau <olivier@bottomlesspit.org>
+# Copyright (c) 2011, 2012, Olivier Bilodeau <olivier@bottomlesspit.org>
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without modification, are
@@ -24,13 +24,22 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # 
 
-# These settings are tweaked for good results with my camera (Canon 7 mega-pixel)
-BITRATE=50
-# to rotate right: rotate=1, rotate left: rotate=3, scale: scale=320:240
-VIDEO_FILTER="rotate=1"
+# Quality
+BITRATE=2000 # good for 720x480 30 fps interlaced, 640x480 30 fps
+#BITRATE=50 # was good for 320x200 30 fps (but probably wrong.. old mencoder bug/feature maybe?)
+
+# additional x264enc options
+X264_OPTS=
+#X264_OPTS=:interlaced
+
+# Audio codec
 # older Canon A70 required AUDIO_CODEC=copy because the weird raw PCM properties prevented 
 # transcoding into mp3lame
 AUDIO_CODEC=mp3lame
+
+# Video filter
+# to rotate right: rotate=1, rotate left: rotate=3, scale: scale=320:240
+VIDEO_FILTER="rotate=1"
 
 # change IFS to newline to handle special file names in for loop
 OLDIFS=$IFS
@@ -52,7 +61,7 @@ I=0
 		let "PROGRESS=(($I-1)*3+1)*100/(3*$NUM_FILES)"
 		echo "$PROGRESS"
 		cd /tmp
-		mencoder "$FILE" -vf $VIDEO_FILTER -ovc x264 -x264encopts pass=1:bitrate=$BITRATE -nosound -o /dev/null
+		mencoder "$FILE" -vf $VIDEO_FILTER -ovc x264 -x264encopts pass=1:bitrate=$BITRATE$X264_OPTS -nosound -o /dev/null
 		if [ $? -ne  0 ]; then
 			zenity --error --text="Something went wrong, bailing out"
 			exit
@@ -63,7 +72,7 @@ I=0
 		let "PROGRESS=(($I-1)*3+2)*100/(3*$NUM_FILES)"
 		echo "$PROGRESS"
 		cd /tmp
-		mencoder "$FILE" -vf $VIDEO_FILTER -ovc x264 -x264encopts pass=2:bitrate=$BITRATE -oac $AUDIO_CODEC -o "$FILE.tmp"
+		mencoder "$FILE" -vf $VIDEO_FILTER -ovc x264 -x264encopts pass=2:bitrate=$BITRATE$X264_OPTS -oac $AUDIO_CODEC -o "$FILE.tmp"
 		if [ $? -ne 0 ]; then
 			zenity --error --text="Something went wrong, bailing out"
 			exit
